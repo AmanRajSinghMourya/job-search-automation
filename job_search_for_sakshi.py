@@ -6,7 +6,7 @@ import time
 import re
 import os
 
-class GoogleSheetsDirectJobSearcher:
+class SimpleJobSearcher:
     def __init__(self):
         self.jobs = []
         self.headers = {
@@ -19,8 +19,9 @@ class GoogleSheetsDirectJobSearcher:
         
         # Google Sheet configuration
         self.SHEET_ID = '1nridtqY_EkI47W8dcKOBhuMLCazepmH9JNPuDXyuYLA'
-        # You'll need to set up a Google Apps Script Web App to receive jobs
-        self.APPS_SCRIPT_URL = os.environ.get('APPS_SCRIPT_URL', '')
+        
+        # Web App URL (you'll set this in GitHub Secrets)
+        self.WEB_APP_URL = os.environ.get('WEB_APP_URL', '')
         
     def extract_salary(self, salary_text):
         """Extract numeric salary from text"""
@@ -252,39 +253,33 @@ class GoogleSheetsDirectJobSearcher:
         
         return set()
     
-    def send_to_google_apps_script(self, formatted_jobs):
+    def send_to_webapp(self, formatted_jobs):
         """Send jobs to Google Apps Script Web App"""
-        if not self.APPS_SCRIPT_URL:
-            print("⚠️  APPS_SCRIPT_URL not set. Saving to JSON file instead.")
+        if not self.WEB_APP_URL:
+            print("⚠️  WEB_APP_URL not set. Jobs will be saved to JSON only.")
             return False
         
         try:
             response = requests.post(
-                self.APPS_SCRIPT_URL,
+                self.WEB_APP_URL,
                 json={'jobs': formatted_jobs},
                 timeout=30
             )
             
             if response.status_code == 200:
-                print(f"✅ Successfully sent {len(formatted_jobs)} jobs to Google Sheets")
+                result = response.json()
+                print(f"✅ Web App Response: {result.get('message', 'Success')}")
                 return True
             else:
-                print(f"❌ Failed to send jobs: {response.status_code}")
+                print(f"❌ Web App returned status: {response.status_code}")
                 return False
                 
         except Exception as e:
-            print(f"❌ Error sending to Apps Script: {e}")
+            print(f"❌ Error sending to Web App: {e}")
             return False
     
-    def save_jobs_to_json(self, formatted_jobs):
-        """Save jobs to JSON file as backup"""
-        output_file = 'new_jobs.json'
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(formatted_jobs, f, indent=2, ensure_ascii=False)
-        print(f"💾 Saved {len(formatted_jobs)} jobs to {output_file}")
-    
     def process_and_save_jobs(self):
-        """Process jobs and prepare for Google Sheets"""
+        """Process jobs and send to Google Sheet"""
         try:
             self.remove_duplicates()
             existing_links = self.get_existing_jobs_from_sheet()
@@ -295,7 +290,8 @@ class GoogleSheetsDirectJobSearcher:
                 formatted_jobs = []
                 # Format: "07 Nov, 2025 5:30 PM"
                 now = datetime.now()
-                current_time = now.strftime('%d %b, %Y %I:%M %p').replace(' 0', ' ')                
+                current_time = now.strftime('%d %b, %Y %I:%M %p').replace(' 0', ' ')
+                
                 for job in new_jobs:
                     formatted_salary = self.format_salary_for_sheet(job['Salary'], job['Type'])
                     
@@ -308,14 +304,14 @@ class GoogleSheetsDirectJobSearcher:
                         'Last Updated': current_time
                     })
                 
-                # Save to JSON (required for GitHub workflow)
-                self.save_jobs_to_json(formatted_jobs)
+                # Send to Web App
+                success = self.send_to_webapp(formatted_jobs)
                 
-                # Try to send to Apps Script if URL is set
-                if self.APPS_SCRIPT_URL:
-                    self.send_to_google_apps_script(formatted_jobs)
+                if success:
+                    print(f"\n✅ Successfully sent {len(new_jobs)} jobs to Google Sheet!")
+                else:
+                    print(f"\n⚠️  Could not send to Google Sheet. Check WEB_APP_URL.")
                 
-                print(f"\n✅ Found {len(new_jobs)} new jobs!")
                 print("\n📋 Sample of new jobs:")
                 for i, job in enumerate(formatted_jobs[:3], 1):
                     print(f"\n{i}. {job['Company']} - {job['Title']}")
@@ -325,8 +321,6 @@ class GoogleSheetsDirectJobSearcher:
                 return len(new_jobs), formatted_jobs
             else:
                 print("ℹ️  No new jobs found in this search")
-                # Still save empty JSON to update timestamp
-                self.save_jobs_to_json([])
                 return 0, []
                 
         except Exception as e:
@@ -343,7 +337,7 @@ def main():
     print(f"📧 Recipients: Sakshi & Aman")
     print("=" * 70)
     
-    searcher = GoogleSheetsDirectJobSearcher()
+    searcher = SimpleJobSearcher()
     
     # Run all searches
     print("\n🔎 Searching LinkedIn...")
@@ -360,16 +354,17 @@ def main():
     searcher.search_internshala()
     print(f"   Found {len(searcher.jobs) - initial_count} new listings")
     
-    # Process and save jobs
+    # Process and send jobs
     print("\n" + "=" * 70)
-    print("💾 Processing jobs...")
+    print("💾 Processing jobs and sending to Google Sheet...")
     new_jobs_count, formatted_jobs = searcher.process_and_save_jobs()
     
     print("=" * 70)
     print(f"✅ SEARCH COMPLETE!")
     print(f"📈 Total jobs searched: {len(searcher.jobs)}")
-    print(f"🆕 New jobs to add: {new_jobs_count}")
-    print(f"📊 Jobs will be emailed by your Google Apps Script")
+    print(f"🆕 New jobs found: {new_jobs_count}")
+    print(f"📊 Jobs sent to Google Sheet")
+    print(f"📧 Your email automation will send notifications")
     print("=" * 70)
 
 if __name__ == "__main__":
