@@ -27,8 +27,8 @@ jobs:
     - name: Run job search script
       env:
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      run: python job_search.py
-      
+        run: python job_search_advanced.py      
+        
     - name: Commit and push if changes
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
