@@ -294,8 +294,8 @@ class GoogleSheetsDirectJobSearcher:
             if new_jobs:
                 formatted_jobs = []
                 # Format: "07 Nov, 2025 5:30 PM"
-                current_time = datetime.now().strftime('%d %b, %Y %-I:%M %p')
-                
+                now = datetime.now()
+                current_time = now.strftime('%d %b, %Y %I:%M %p').replace(' 0', ' ')                
                 for job in new_jobs:
                     formatted_salary = self.format_salary_for_sheet(job['Salary'], job['Type'])
                     
