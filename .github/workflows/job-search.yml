@@ -26,4 +26,4 @@ jobs:
     - name: Search jobs and send to Google Sheet
       env:
         WEB_APP_URL: ${{ secrets.WEB_APP_URL }}
-      run: python job_search_simple.py
+      run: python job_search_for_sakshi.py
