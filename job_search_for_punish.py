@@ -18,8 +18,7 @@ class SimpleJobSearcher:
         self.min_ctc = 500000  # Rs per annum
 
         # Google Sheet configuration
-        # TODO: Replace with Punish's Google Sheet ID
-        self.SHEET_ID = 'YOUR_SHEET_ID_HERE'
+        self.SHEET_ID = '1nridtqY_EkI47W8dcKOBhuMLCazepmH9JNPuDXyuYLA'
 
         # Web App URL (you'll set this in GitHub Secrets)
         self.WEB_APP_URL = os.environ.get('WEB_APP_URL_PUNISH', '')
