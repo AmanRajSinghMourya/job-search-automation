@@ -235,37 +235,84 @@ class SimpleJobSearcher:
         try:
             csv_url = f"https://docs.google.com/spreadsheets/d/{self.SHEET_ID}/export?format=csv&gid=0"
             response = requests.get(csv_url, timeout=10)
-            
+
             if response.status_code == 200:
                 existing_links = set()
+                existing_jobs = set()
                 lines = response.text.strip().split('\n')
-                
+
                 for line in lines[1:]:
                     parts = line.split(',')
                     if len(parts) >= 5:
+                        company = parts[0].strip('"').lower()
+                        title = parts[1].strip('"').lower()
                         link = parts[4].strip('"')
+
                         if link and link != 'Apply Link':
                             existing_links.add(link)
-                
-                return existing_links
+
+                        if company and title and company != 'company' and title != 'title':
+                            existing_jobs.add((title, company))
+
+                return existing_links, existing_jobs
         except Exception as e:
             print(f"Could not fetch existing jobs: {e}")
-        
-        return set()
+
+        return set(), set()
     
-    def send_to_webapp(self, formatted_jobs):
-        """Send jobs to Google Apps Script Web App"""
+    def send_to_webapp(self, formatted_jobs, add_separator=True):
+        """Send jobs to Google Apps Script Web App with optional separator"""
         if not self.WEB_APP_URL:
             print("⚠️  WEB_APP_URL not set. Jobs will be saved to JSON only.")
             return False
-        
+
         try:
+            # Add separator rows before new jobs for visual clarity
+            jobs_to_send = []
+
+            if add_separator and formatted_jobs:
+                now = datetime.now()
+                separator_time = now.strftime('%d %b, %Y %I:%M %p').replace(' 0', ' ')
+
+                # Add empty row for spacing
+                jobs_to_send.append({
+                    'Company': '',
+                    'Title': '',
+                    'Type': '',
+                    'Stipend/CTC': '',
+                    'Apply Link': '',
+                    'Last Updated': ''
+                })
+
+                # Add separator row with timestamp
+                jobs_to_send.append({
+                    'Company': f'━━━━ NEW JOBS ADDED ON {separator_time} ━━━━',
+                    'Title': '',
+                    'Type': '',
+                    'Stipend/CTC': '',
+                    'Apply Link': '',
+                    'Last Updated': separator_time
+                })
+
+                # Add another empty row for spacing
+                jobs_to_send.append({
+                    'Company': '',
+                    'Title': '',
+                    'Type': '',
+                    'Stipend/CTC': '',
+                    'Apply Link': '',
+                    'Last Updated': ''
+                })
+
+            # Add the actual jobs
+            jobs_to_send.extend(formatted_jobs)
+
             response = requests.post(
                 self.WEB_APP_URL,
-                json={'jobs': formatted_jobs},
+                json={'jobs': jobs_to_send},
                 timeout=30
             )
-            
+
             if response.status_code == 200:
                 result = response.json()
                 print(f"✅ Web App Response: {result.get('message', 'Success')}")
@@ -273,7 +320,7 @@ class SimpleJobSearcher:
             else:
                 print(f"❌ Web App returned status: {response.status_code}")
                 return False
-                
+
         except Exception as e:
             print(f"❌ Error sending to Web App: {e}")
             return False
@@ -282,10 +329,25 @@ class SimpleJobSearcher:
         """Process jobs and send to Google Sheet"""
         try:
             self.remove_duplicates()
-            existing_links = self.get_existing_jobs_from_sheet()
-            
-            new_jobs = [job for job in self.jobs if job['Link'] not in existing_links and job['Link']]
-            
+            existing_links, existing_jobs = self.get_existing_jobs_from_sheet()
+
+            # Filter out jobs that already exist (by link OR by title+company)
+            new_jobs = []
+            for job in self.jobs:
+                if not job['Link']:
+                    continue
+
+                # Check if job exists by link
+                if job['Link'] in existing_links:
+                    continue
+
+                # Check if job exists by title + company
+                job_identifier = (job['Title'].lower(), job['Company'].lower())
+                if job_identifier in existing_jobs:
+                    continue
+
+                new_jobs.append(job)
+
             if new_jobs:
                 formatted_jobs = []
                 # Format: "07 Nov, 2025 5:30 PM"
