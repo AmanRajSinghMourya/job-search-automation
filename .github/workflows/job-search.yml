@@ -2,7 +2,7 @@ name: Simple Job Search
 
 on:
   schedule:
-    - cron: '0 0 */2 * *'     
+    - cron: '0 10 * * *'     
 
   workflow_dispatch:  # Manual trigger
 
@@ -27,4 +27,4 @@ jobs:
     - name: Search jobs and send to Google Sheet
       env:
         WEB_APP_URL: ${{ secrets.WEB_APP_URL }}
-      run: python job_search_for_sakshi.py
+      run: python job_search_for_punish.py
