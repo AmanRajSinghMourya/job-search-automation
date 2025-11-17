@@ -255,7 +255,7 @@ class SimpleJobSearcher:
 
         return set()
 
-    def send_to_webapp(self, formatted_jobs):
+    def send_to_webapp(self, payload):
         """Send jobs to Google Apps Script Web App"""
         if not self.WEB_APP_URL:
             print("⚠️  WEB_APP_URL not set. Jobs will be saved to JSON only.")
@@ -264,7 +264,7 @@ class SimpleJobSearcher:
         try:
             response = requests.post(
                 self.WEB_APP_URL,
-                json={'jobs': formatted_jobs},
+                json=payload,
                 timeout=30
             )
 
@@ -293,6 +293,7 @@ class SimpleJobSearcher:
                 # Format: "07 Nov, 2025 5:30 PM"
                 now = datetime.now()
                 current_time = now.strftime('%d %b, %Y %I:%M %p').replace(' 0', ' ')
+                batch_date = now.strftime('%d %b %Y, %I:%M %p').replace(' 0', ' ')
 
                 for job in new_jobs:
                     formatted_salary = self.format_salary_for_sheet(job['Salary'], job['Type'])
@@ -306,8 +307,18 @@ class SimpleJobSearcher:
                         'Last Updated': current_time
                     })
 
+                # Prepare payload with batch metadata for better organization
+                payload = {
+                    'jobs': formatted_jobs,
+                    'metadata': {
+                        'batch_date': batch_date,
+                        'job_count': len(new_jobs),
+                        'add_separator': True  # Signal to add spacing before new jobs
+                    }
+                }
+
                 # Send to Web App
-                success = self.send_to_webapp(formatted_jobs)
+                success = self.send_to_webapp(payload)
 
                 if success:
                     print(f"\n✅ Successfully sent {len(new_jobs)} jobs to Google Sheet!")

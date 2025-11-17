@@ -253,19 +253,19 @@ class SimpleJobSearcher:
         
         return set()
     
-    def send_to_webapp(self, formatted_jobs):
+    def send_to_webapp(self, payload):
         """Send jobs to Google Apps Script Web App"""
         if not self.WEB_APP_URL:
             print("⚠️  WEB_APP_URL not set. Jobs will be saved to JSON only.")
             return False
-        
+
         try:
             response = requests.post(
                 self.WEB_APP_URL,
-                json={'jobs': formatted_jobs},
+                json=payload,
                 timeout=30
             )
-            
+
             if response.status_code == 200:
                 result = response.json()
                 print(f"✅ Web App Response: {result.get('message', 'Success')}")
@@ -273,7 +273,7 @@ class SimpleJobSearcher:
             else:
                 print(f"❌ Web App returned status: {response.status_code}")
                 return False
-                
+
         except Exception as e:
             print(f"❌ Error sending to Web App: {e}")
             return False
@@ -283,18 +283,19 @@ class SimpleJobSearcher:
         try:
             self.remove_duplicates()
             existing_links = self.get_existing_jobs_from_sheet()
-            
+
             new_jobs = [job for job in self.jobs if job['Link'] not in existing_links and job['Link']]
-            
+
             if new_jobs:
                 formatted_jobs = []
                 # Format: "07 Nov, 2025 5:30 PM"
                 now = datetime.now()
                 current_time = now.strftime('%d %b, %Y %I:%M %p').replace(' 0', ' ')
-                
+                batch_date = now.strftime('%d %b %Y, %I:%M %p').replace(' 0', ' ')
+
                 for job in new_jobs:
                     formatted_salary = self.format_salary_for_sheet(job['Salary'], job['Type'])
-                    
+
                     formatted_jobs.append({
                         'Company': job['Company'],
                         'Title': job['Title'],
@@ -303,26 +304,36 @@ class SimpleJobSearcher:
                         'Apply Link': job['Link'],
                         'Last Updated': current_time
                     })
-                
+
+                # Prepare payload with batch metadata for better organization
+                payload = {
+                    'jobs': formatted_jobs,
+                    'metadata': {
+                        'batch_date': batch_date,
+                        'job_count': len(new_jobs),
+                        'add_separator': True  # Signal to add spacing before new jobs
+                    }
+                }
+
                 # Send to Web App
-                success = self.send_to_webapp(formatted_jobs)
-                
+                success = self.send_to_webapp(payload)
+
                 if success:
                     print(f"\n✅ Successfully sent {len(new_jobs)} jobs to Google Sheet!")
                 else:
                     print(f"\n⚠️  Could not send to Google Sheet. Check WEB_APP_URL.")
-                
+
                 print("\n📋 Sample of new jobs:")
                 for i, job in enumerate(formatted_jobs[:3], 1):
                     print(f"\n{i}. {job['Company']} - {job['Title']}")
                     print(f"   Type: {job['Type']} | Salary: {job['Stipend/CTC']}")
                     print(f"   Link: {job['Apply Link'][:70]}...")
-                
+
                 return len(new_jobs), formatted_jobs
             else:
                 print("ℹ️  No new jobs found in this search")
                 return 0, []
-                
+
         except Exception as e:
             print(f"❌ Error processing jobs: {e}")
             return 0, []
