@@ -21,7 +21,7 @@ class SimpleJobSearcher:
         self.SHEET_ID = '1nridtqY_EkI47W8dcKOBhuMLCazepmH9JNPuDXyuYLA'
 
         # Web App URL (you'll set this in GitHub Secrets)
-        self.WEB_APP_URL = os.environ.get('WEB_APP_URL_PUNISH', '')
+        self.WEB_APP_URL = os.environ.get('WEB_APP_URL', '')
 
     def extract_salary(self, salary_text):
         """Extract numeric salary from text"""
