@@ -170,6 +170,38 @@ class SimpleJobSearcher:
             'Verizon': 'https://www.verizon.com/about/careers',
             'Fastenal': 'https://careers.fastenal.com/',
             'Zynga': 'https://www.zynga.com/careers/',
+
+            # Additional Companies from Placement Tracker
+            'ADP': 'https://jobs.adp.com/en/locations/apac/india/',
+            'ASM Technology': 'https://www.asm.com/careers',
+            'Accordion': 'https://www.accordionpartners.com/careers/',
+            'AVEVA': 'https://www.aveva.com/en/about/careers/',
+            'Blend': 'https://blend.com/company/careers/',
+            'Broadridge': 'https://broadridge.wd5.myworkdayjobs.com/Careers',
+            'Futures First': 'https://www.futuresfirst.com/careers/',
+            'GE Vernova': 'https://jobs.gecareers.com/',
+            'Greenway Healthcare': 'https://www.greenwayhealth.com/about/careers',
+            'Human Resocia': 'https://corporate.resocia.jp/en/recruit/',
+            'KLA': 'https://www.kla.com/careers/locations/india',
+            'Leadsquared': 'https://www.leadsquared.com/careers/',
+            'MIQ Digital': 'https://www.wearemiq.com/careers/',
+            'Movate': 'https://www.movate.com/careers/',
+            'Niyo Solutions': 'https://www.goniyo.com/careers',
+            'Poshmark': 'https://poshmark.com/careers',
+            'Presidio': 'https://www.presidio.com/careers/',
+            'Quantiphi': 'https://quantiphi.com/careers/',
+            'Rystad Energy': 'https://www.rystadenergy.com/about/careers/',
+            'SAP Labs': 'https://jobs.sap.com/go/SAP-Jobs-in-India/851201/',
+            'Saviynt': 'https://saviynt.com/careers',
+            'Shipsy': 'https://shipsy.io/careers/',
+            'SolarWinds': 'https://jobs.solarwinds.com/',
+            'Seven Eleven': 'https://careers.7-eleven.com/',
+            'TechMojo': 'https://www.techmojo.com/careers/',
+            'TresVista': 'https://www.tresvista.com/careers/',
+            'Western Digital': 'https://www.westerndigital.com/en-in/careers',
+            'Watchguard': 'https://www.watchguard.com/wgrd-about/careers',
+            'Zluri': 'https://www.zluri.com/careers',
+            'XFLOW Payments': 'https://www.xflowpay.com/careers',
         }
 
     def extract_salary(self, salary_text):
@@ -372,12 +404,23 @@ class SimpleJobSearcher:
         """Search company career pages from placement tracker companies"""
         # Priority companies to search (high CTC companies from placement tracker)
         priority_companies = [
-            'Google', 'Microsoft', 'Amazon', 'Adobe', 'Apple', 'Goldman Sachs',
-            'JP Morgan', 'Morgan Stanley', 'Flipkart', 'Meesho', 'Zomato',
-            'PhonePe', 'Visa', 'PayPal', 'Intuit', 'Cisco', 'Oracle',
-            'Walmart', 'American Express', 'BlackRock', 'Wells Fargo',
-            'Dell', 'Nutanix', 'Commvault', 'Couchbase', 'Workday', 'OKTA',
-            'Marvell', 'Samsung', 'Honeywell', 'Optum'
+            # 40+ LPA companies
+            'Google', 'Microsoft', 'Amazon', 'Adobe', 'Apple', 'Meesho', 'Zomato',
+            # 30+ LPA companies
+            'Goldman Sachs', 'Flipkart', 'PayPal', 'PhonePe', 'Commvault', 'Couchbase',
+            'Visa', 'Zynga', 'XFLOW Payments',
+            # 20+ LPA companies
+            'JP Morgan', 'Morgan Stanley', 'Cisco', 'Bank of New York Mellon', 'Wells Fargo',
+            'Walmart', 'OKTA', 'Marvell', 'Samsung', 'KLA', 'Workday', 'Human Resocia',
+            'BlackRock', 'MUFG', 'Western Digital', 'Tekion', 'Saviynt', 'Blend',
+            # 15+ LPA companies
+            'American Express', 'Intuit', 'Oracle', 'Dell', 'Nutanix', 'Optum',
+            'Bain', 'IDFC', 'ION', 'Juniper Networks', 'Fastenal', 'GE Vernova',
+            'Futures First', 'Niyo Solutions', 'Nielsen', 'Caterpillar', 'Sabre',
+            'Airtel', 'Pegasystems', 'Swiss Re', 'ZS Associates', 'Bottomline',
+            # Other notable companies
+            'Honeywell', 'Accenture', 'Deloitte', 'EY', 'KPMG', 'PwC',
+            'Infosys', 'DBS', 'CHUBB', 'Fidelity', 'UBS', 'Epsilon', 'Broadridge'
         ]
 
         search_keywords = [
