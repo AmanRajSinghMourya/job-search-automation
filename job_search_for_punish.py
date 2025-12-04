@@ -23,6 +23,155 @@ class SimpleJobSearcher:
         # Web App URL (you'll set this in GitHub Secrets)
         self.WEB_APP_URL = os.environ.get('WEB_APP_URL', '')
 
+        # Company career pages from placement tracker (BTech 2026)
+        self.company_career_pages = {
+            # Top Tech Companies
+            'Google': 'https://careers.google.com/jobs/results/?location=India',
+            'Microsoft': 'https://careers.microsoft.com/professionals/us/en/search-results?keywords=India',
+            'Amazon': 'https://www.amazon.jobs/en/search?base_query=&loc_query=India&country=IND',
+            'Apple': 'https://www.apple.com/careers/in/',
+            'Adobe': 'https://www.adobe.com/careers.html',
+            'Flipkart': 'https://www.flipkartcareers.com/',
+            'Meesho': 'https://www.meesho.io/jobs',
+            'Zomato': 'https://www.zomato.com/careers',
+            'PhonePe': 'https://www.phonepe.com/careers/job-openings/',
+            'Intuit': 'https://www.intuit.com/in/careers/',
+
+            # Finance & Banking
+            'Goldman Sachs': 'https://www.goldmansachs.com/careers/apply',
+            'JP Morgan': 'https://careers.jpmorgan.com/in/en/home',
+            'Morgan Stanley': 'https://www.morganstanley.com/careers/career-opportunities-search',
+            'American Express': 'https://jobs.americanexpress.com/india/jobs',
+            'Visa': 'https://corporate.visa.com/en/jobs/',
+            'PayPal': 'https://www.paypal.com/in/webapps/mpp/jobs/locations',
+            'Wells Fargo': 'https://www.wellsfargojobs.com/en/jobs/',
+            'Citi': 'https://jobs.citi.com/search-jobs/India',
+            'Bank of New York Mellon': 'https://bfryrsc.wd1.myworkdayjobs.com/BK',
+            'BlackRock': 'https://careers.blackrock.com/location/india-jobs/45831/1269750/2',
+            'UBS': 'https://www.ubs.com/global/en/careers.html',
+            'IDFC': 'https://www.idfcfirstbank.com/careers',
+            'DBS': 'https://www.dbs.com/careers/',
+            'BNP Paribas': 'https://careers.bnpparibas.com/index.html',
+            'MUFG': 'https://careers.mufgamericas.com/',
+            'HSBC': 'https://www.hsbc.com/careers',
+
+            # Tech & Software
+            'Cisco': 'https://jobs.cisco.com/jobs/SearchJobs/India',
+            'Oracle': 'https://careers.oracle.com/en/sites/jobsearch/jobs?location=India&locationId=300000000106947&locationLevel=country&mode=location',
+            'Dell': 'https://jobs.dell.com/en/india-jobs',
+            'HP': 'https://jobs.hp.com/',
+            'HPE': 'https://careers.hpe.com/jobs',
+            'IBM': 'https://www.ibm.com/careers/search?field_keyword_08[0]=India',
+            'Infosys': 'https://www.infosys.com/careers/apply.html',
+            'Accenture': 'https://www.accenture.com/in-en/careers/jobsearch',
+            'Deloitte': 'https://jobsindia.deloitte.com/viewalljobs/',
+            'Cognizant': 'https://careers.cognizant.com/global-en/',
+            'TCS': 'https://www.tcs.com/careers',
+            'Wipro': 'https://careers.wipro.com/',
+            'LTIMindtree': 'https://www.ltimindtree.com/careers/',
+            'Tech Mahindra': 'https://careers.techmahindra.com/',
+            'HCL': 'https://www.hcltech.com/careers',
+            'Marvell': 'https://marvell.wd1.myworkdayjobs.com/MarvellCareers',
+            'Nutanix': 'https://careers.nutanix.com/en/jobs/',
+            'Commvault': 'https://careers.commvault.com/',
+            'Couchbase': 'https://www.couchbase.com/careers/',
+            'Workday': 'https://www.workday.com/en-us/company/careers/open-positions.html',
+            'OKTA': 'https://www.okta.com/company/careers/job-listing/',
+            'Juniper Networks': 'https://jobs.juniper.net/',
+            'Samsung': 'https://www.samsung.com/in/about-us/careers/',
+            'AMD': 'https://careers.amd.com/',
+            'Qualcomm': 'https://www.qualcomm.com/company/careers',
+
+            # Consulting & Professional Services
+            'EY': 'https://careers.ey.com/ey/search',
+            'KPMG': 'https://kpmg.com/in/en/home/careers.html',
+            'PwC': 'https://www.pwc.in/careers.html',
+            'Bain': 'https://www.bain.com/careers/',
+            'BCG': 'https://careers.bcg.com/',
+            'McKinsey': 'https://www.mckinsey.com/careers',
+            'ZS Associates': 'https://www.zs.com/careers',
+            'Fractal Analytics': 'https://fractal.ai/careers/',
+            'Tredence': 'https://www.tredence.com/careers',
+
+            # E-commerce & Retail
+            'Walmart': 'https://tech.walmart.com/content/walmart-global-tech/en_us/careers.html',
+            'Airtel': 'https://www.airtel.in/careers/',
+            'Unilever': 'https://careers.unilever.com/',
+            'PepsiCo': 'https://www.pepsicojobs.com/main/',
+
+            # Healthcare & Pharma
+            'Optum': 'https://careers.unitedhealthgroup.com/',
+            'Labcorp': 'https://careers.labcorp.com/',
+            'Thermofisher': 'https://jobs.thermofisher.com/',
+
+            # Fintech & Payments
+            'Razorpay': 'https://razorpay.com/jobs/',
+            'CRED': 'https://careers.cred.club/',
+            'Groww': 'https://groww.in/careers',
+            'Zerodha': 'https://zerodha.com/careers/',
+
+            # Manufacturing & Engineering
+            'Honeywell': 'https://careers.honeywell.com/',
+            'GE': 'https://jobs.gecareers.com/',
+            'Siemens': 'https://jobs.siemens.com/careers',
+            'Bosch': 'https://www.bosch.in/careers/',
+            'Caterpillar': 'https://careers.caterpillar.com/',
+            'Baker Hughes': 'https://careers.bakerhughes.com/',
+            'Schlumberger': 'https://careers.slb.com/',
+            'Shell': 'https://www.shell.com/careers.html',
+            'Rolls Royce': 'https://careers.rolls-royce.com/',
+            'BMW': 'https://www.bmwgroup.jobs/',
+            'Volvo': 'https://www.volvogroup.com/en/careers.html',
+            'Toshiba': 'https://www.toshiba.co.jp/worldwide/recruit/',
+            'Schneider': 'https://www.se.com/ww/en/about-us/careers/',
+            'Ericsson': 'https://www.ericsson.com/en/careers',
+            'Garmin': 'https://careers.garmin.com/',
+            'Visteon': 'https://www.visteon.com/careers/',
+            'Aptiv': 'https://www.aptiv.com/en/careers',
+
+            # Insurance & Financial Services
+            'CHUBB': 'https://careers.chubb.com/',
+            'Swiss Re': 'https://careers.swissre.com/',
+            'Guardian': 'https://www.guardianlife.com/careers',
+            'Fidelity': 'https://jobs.fidelity.com/',
+            'Bajaj Finserv': 'https://www.bajajfinserv.in/careers',
+
+            # Other Notable Companies
+            'Thoughtworks': 'https://www.thoughtworks.com/careers',
+            'Atlassian': 'https://www.atlassian.com/company/careers',
+            'Salesforce': 'https://www.salesforce.com/company/careers/',
+            'ServiceNow': 'https://www.servicenow.com/careers.html',
+            'Splunk': 'https://www.splunk.com/en_us/careers.html',
+            'VMware': 'https://careers.vmware.com/',
+            'NetApp': 'https://www.netapp.com/company/careers/',
+            'Broadcom': 'https://www.broadcom.com/company/careers',
+            'NatWest': 'https://jobs.natwestgroup.com/',
+            'SOCIETE GENERALE': 'https://careers.societegenerale.com/',
+            'Commonwealth Bank': 'https://www.commbank.com.au/about-us/careers.html',
+            'London Stock Exchange': 'https://www.lseg.com/en/careers',
+            'Nielsen': 'https://careers.nielsen.com/',
+            'Sabre': 'https://www.sabre.com/careers/',
+            'Pegasystems': 'https://www.pega.com/about/careers',
+            'Epsilon': 'https://www.epsilon.com/us/about-us/careers',
+            'ION': 'https://iongroup.com/careers/',
+            'Bottomline': 'https://www.bottomline.com/us/about/careers',
+            'RingCentral': 'https://www.ringcentral.com/whyringcentral/company/careers.html',
+            'Zenoti': 'https://www.zenoti.com/careers',
+            'Tekion': 'https://tekion.com/careers',
+            'Kinaxis': 'https://www.kinaxis.com/en/careers',
+            'PTC': 'https://www.ptc.com/en/about/careers',
+            'QSC': 'https://www.qsc.com/about-qsc/careers/',
+            'Sapiens': 'https://sapiens.com/careers/',
+            'Ramco Systems': 'https://www.ramco.com/careers/',
+            'ITC Infotech': 'https://www.itcinfotech.com/careers/',
+            'Incedo': 'https://www.incedoinc.com/careers/',
+            'Prodapt': 'https://www.prodapt.com/careers/',
+            'EMIDS': 'https://www.emids.com/careers/',
+            'Verizon': 'https://www.verizon.com/about/careers',
+            'Fastenal': 'https://careers.fastenal.com/',
+            'Zynga': 'https://www.zynga.com/careers/',
+        }
+
     def extract_salary(self, salary_text):
         """Extract numeric salary from text"""
         if not salary_text or salary_text == 'Not disclosed':
@@ -219,6 +368,110 @@ class SimpleJobSearcher:
             except Exception as e:
                 print(f"Naukri search error for '{term}': {e}")
 
+    def search_company_career_pages(self):
+        """Search company career pages from placement tracker companies"""
+        # Priority companies to search (high CTC companies from placement tracker)
+        priority_companies = [
+            'Google', 'Microsoft', 'Amazon', 'Adobe', 'Apple', 'Goldman Sachs',
+            'JP Morgan', 'Morgan Stanley', 'Flipkart', 'Meesho', 'Zomato',
+            'PhonePe', 'Visa', 'PayPal', 'Intuit', 'Cisco', 'Oracle',
+            'Walmart', 'American Express', 'BlackRock', 'Wells Fargo',
+            'Dell', 'Nutanix', 'Commvault', 'Couchbase', 'Workday', 'OKTA',
+            'Marvell', 'Samsung', 'Honeywell', 'Optum'
+        ]
+
+        search_keywords = [
+            'intern', 'fresher', 'graduate', 'entry level', 'associate',
+            'software engineer', 'developer', 'sde', '2025', '2026'
+        ]
+
+        jobs_found = 0
+
+        for company in priority_companies:
+            if company not in self.company_career_pages:
+                continue
+
+            career_url = self.company_career_pages[company]
+
+            try:
+                response = requests.get(career_url, headers=self.headers, timeout=15)
+
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.content, 'html.parser')
+                    page_text = soup.get_text().lower()
+
+                    # Check if page has relevant job listings
+                    has_relevant_jobs = any(keyword in page_text for keyword in search_keywords)
+
+                    if has_relevant_jobs:
+                        # Try to extract job listings from common patterns
+                        # Look for job cards/listings
+                        job_elements = soup.find_all(['div', 'li', 'article'], class_=lambda x: x and any(
+                            term in str(x).lower() for term in ['job', 'position', 'opening', 'career', 'listing', 'card']
+                        ))
+
+                        for elem in job_elements[:10]:
+                            try:
+                                # Try to extract title
+                                title_elem = elem.find(['h2', 'h3', 'h4', 'a', 'span'], class_=lambda x: x and any(
+                                    term in str(x).lower() for term in ['title', 'name', 'position', 'role', 'job-title']
+                                ))
+
+                                if title_elem:
+                                    title_text = title_elem.get_text().strip()
+
+                                    # Check if it's a relevant role (intern/fresher/entry-level)
+                                    title_lower = title_text.lower()
+                                    is_relevant = any(kw in title_lower for kw in ['intern', 'fresher', 'graduate', 'entry', 'associate', 'junior', 'trainee'])
+
+                                    if is_relevant and len(title_text) > 5 and len(title_text) < 150:
+                                        # Try to get job link
+                                        link_elem = elem.find('a', href=True)
+                                        job_link = ''
+                                        if link_elem:
+                                            href = link_elem.get('href', '')
+                                            if href.startswith('http'):
+                                                job_link = href
+                                            elif href.startswith('/'):
+                                                # Extract base URL
+                                                from urllib.parse import urlparse
+                                                parsed = urlparse(career_url)
+                                                job_link = f"{parsed.scheme}://{parsed.netloc}{href}"
+                                            else:
+                                                job_link = career_url
+
+                                        job_type = 'Internship' if 'intern' in title_lower else 'Full-time'
+
+                                        job_data = {
+                                            'Company': company,
+                                            'Title': title_text,
+                                            'Type': job_type,
+                                            'Salary': 'Not disclosed',
+                                            'Link': job_link if job_link else career_url,
+                                            'Source': 'Company Career Page'
+                                        }
+
+                                        # Avoid duplicates within this search
+                                        is_duplicate = any(
+                                            j['Title'].lower() == title_text.lower() and j['Company'].lower() == company.lower()
+                                            for j in self.jobs
+                                        )
+
+                                        if not is_duplicate:
+                                            self.jobs.append(job_data)
+                                            jobs_found += 1
+
+                            except Exception as e:
+                                continue
+
+                time.sleep(2)  # Rate limiting
+
+            except Exception as e:
+                print(f"Career page search error for '{company}': {e}")
+                continue
+
+        return jobs_found
+
     def remove_duplicates(self):
         """Remove duplicate job listings"""
         seen = set()
@@ -399,6 +652,7 @@ def main():
     print(f"🎯 Target: Software Development Internships/Jobs for 2026 Batch")
     print(f"💰 Min Stipend: ₹20,000/month | Min CTC: ₹5 LPA")
     print(f"📧 Recipient: Punish")
+    print(f"🏢 Sources: LinkedIn, Naukri, Internshala + Company Career Pages")
     print("=" * 70)
 
     searcher = SimpleJobSearcher()
@@ -417,6 +671,11 @@ def main():
     initial_count = len(searcher.jobs)
     searcher.search_internshala()
     print(f"   Found {len(searcher.jobs) - initial_count} new listings")
+
+    print("\n🔎 Searching Company Career Pages (Placement Tracker Companies)...")
+    initial_count = len(searcher.jobs)
+    career_jobs = searcher.search_company_career_pages()
+    print(f"   Found {len(searcher.jobs) - initial_count} new listings from company career pages")
 
     # Process and send jobs
     print("\n" + "=" * 70)
