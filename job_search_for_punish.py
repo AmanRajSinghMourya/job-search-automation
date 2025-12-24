@@ -170,6 +170,136 @@ class SimpleJobSearcher:
             'Verizon': 'https://www.verizon.com/about/careers',
             'Fastenal': 'https://careers.fastenal.com/',
             'Zynga': 'https://www.zynga.com/careers/',
+
+            # Additional Tech Companies
+            'Stripe': 'https://stripe.com/jobs',
+            'Twilio': 'https://www.twilio.com/company/jobs',
+            'Dropbox': 'https://www.dropbox.com/jobs',
+            'Zoom': 'https://careers.zoom.us/',
+            'Slack': 'https://slack.com/careers',
+            'Notion': 'https://www.notion.so/careers',
+            'Figma': 'https://www.figma.com/careers/',
+            'Canva': 'https://www.canva.com/careers/',
+            'GitLab': 'https://about.gitlab.com/jobs/',
+            'GitHub': 'https://github.com/about/careers',
+            'Postman': 'https://www.postman.com/company/careers/',
+            'Contentful': 'https://www.contentful.com/careers/',
+            'Airtable': 'https://airtable.com/careers',
+            'Asana': 'https://asana.com/jobs',
+            'Monday.com': 'https://monday.com/careers',
+            'Freshworks': 'https://www.freshworks.com/company/careers/',
+            'Zoho': 'https://www.zoho.com/careers/',
+            'BrowserStack': 'https://www.browserstack.com/careers',
+            'Hasura': 'https://hasura.io/careers/',
+            'Postman': 'https://www.postman.com/company/careers/',
+            'Chargebee': 'https://www.chargebee.com/company/careers/',
+            'Druva': 'https://www.druva.com/company/careers/',
+            'Icertis': 'https://www.icertis.com/company/careers/',
+            'Mindtickle': 'https://www.mindtickle.com/careers/',
+            'MoEngage': 'https://www.moengage.com/careers/',
+            'CleverTap': 'https://clevertap.com/careers/',
+            'Sprinklr': 'https://www.sprinklr.com/careers/',
+            'Yellow.ai': 'https://yellow.ai/careers/',
+            'Darwinbox': 'https://darwinbox.com/careers',
+            'Leadsquared': 'https://www.leadsquared.com/careers/',
+            'Unacademy': 'https://unacademy.com/careers',
+            'BYJU\'S': 'https://byjus.com/careers/',
+            'Vedantu': 'https://www.vedantu.com/careers',
+            'UpGrad': 'https://www.upgrad.com/careers/',
+            'Testbook': 'https://testbook.com/careers',
+            'Physics Wallah': 'https://www.pw.live/careers',
+
+            # Fintech & Payments
+            'Paytm': 'https://paytm.com/careers/',
+            'BharatPe': 'https://bharatpe.com/careers/',
+            'Payu': 'https://corporate.payu.com/careers/',
+            'Pine Labs': 'https://www.pinelabs.com/careers',
+            'Juspay': 'https://juspay.in/careers',
+            'Cashfree': 'https://www.cashfree.com/careers/',
+            'Instamojo': 'https://www.instamojo.com/careers/',
+            'Slice': 'https://www.sliceit.com/careers',
+            'Jupiter': 'https://jupiter.money/careers/',
+            'Fi': 'https://fi.money/careers',
+            'Niyo': 'https://www.goniyo.com/careers/',
+            'Open': 'https://open.money/careers',
+            'Lendingkart': 'https://www.lendingkart.com/careers/',
+            'Capital Float': 'https://capitalfloat.com/careers/',
+            'Rupeek': 'https://rupeek.com/careers/',
+            'Khatabook': 'https://khatabook.com/careers',
+            'OkCredit': 'https://okcredit.in/careers',
+            'Acko': 'https://www.acko.com/careers/',
+            'Digit Insurance': 'https://www.godigit.com/careers',
+            'PolicyBazaar': 'https://www.policybazaar.com/careers/',
+
+            # E-commerce & Delivery
+            'Nykaa': 'https://www.nykaa.com/careers',
+            'Myntra': 'https://www.myntra.com/careers',
+            'Ajio': 'https://www.ajio.com/careers',
+            'Snapdeal': 'https://www.snapdeal.com/page/careers',
+            'Firstcry': 'https://www.firstcry.com/careers',
+            'BigBasket': 'https://www.bigbasket.com/careers/',
+            'Blinkit': 'https://blinkit.com/careers',
+            'Zepto': 'https://www.zeptonow.com/careers',
+            'Dunzo': 'https://www.dunzo.com/careers',
+            'Delhivery': 'https://www.delhivery.com/careers/',
+            'Shiprocket': 'https://www.shiprocket.in/careers/',
+            'Lenskart': 'https://www.lenskart.com/careers.html',
+            'Purplle': 'https://www.purplle.com/careers',
+            'Mamaearth': 'https://mamaearth.in/careers',
+            'boAt': 'https://www.boat-lifestyle.com/pages/career',
+            'Sugar Cosmetics': 'https://www.sugarcosmetics.com/pages/careers',
+
+            # Gaming & Entertainment
+            'Dream11': 'https://www.dreamsports.group/careers/',
+            'MPL': 'https://www.mpl.live/careers',
+            'Games24x7': 'https://www.games24x7.com/careers/',
+            'Nazara': 'https://www.nazara.com/career/',
+            'Pocket Aces': 'https://pocketaces.in/careers',
+            'ShareChat': 'https://sharechat.com/careers',
+            'Moj': 'https://mojapp.in/careers',
+            'Josh': 'https://myjosh.in/careers',
+            'Hotstar': 'https://www.hotstar.com/in/careers',
+            'JioSaavn': 'https://www.jiosaavn.com/corporate/careers',
+            'Gaana': 'https://gaana.com/careers',
+            'Wynk': 'https://wynk.in/careers',
+
+            # Travel & Hospitality
+            'MakeMyTrip': 'https://careers.makemytrip.com/',
+            'Goibibo': 'https://www.goibibo.com/careers/',
+            'Yatra': 'https://www.yatra.com/online/yatra-careers.html',
+            'Cleartrip': 'https://www.cleartrip.com/careers/',
+            'ixigo': 'https://www.ixigo.com/careers',
+            'OYO': 'https://www.oyorooms.com/careers/',
+            'Treebo': 'https://www.treebo.com/careers/',
+            'FabHotels': 'https://www.fabhotels.com/careers',
+            'Zostel': 'https://www.zostel.com/careers/',
+            'RedBus': 'https://www.redbus.in/careers',
+
+            # Healthcare & Wellness
+            'Practo': 'https://www.practo.com/company/careers',
+            'PharmEasy': 'https://pharmeasy.in/careers',
+            '1mg': 'https://www.1mg.com/careers',
+            'Netmeds': 'https://www.netmeds.com/careers',
+            'Apollo': 'https://www.apollo247.com/careers',
+            'Cult.fit': 'https://www.cult.fit/cult/careers',
+            'HealthifyMe': 'https://www.healthifyme.com/careers/',
+            'Innovaccer': 'https://innovaccer.com/careers/',
+
+            # Real Estate & Property
+            'Housing.com': 'https://housing.com/careers',
+            'NoBroker': 'https://www.nobroker.in/careers',
+            'Magicbricks': 'https://www.magicbricks.com/careers',
+            '99acres': 'https://www.99acres.com/company/careers',
+            'PropTiger': 'https://www.proptiger.com/careers',
+            'Square Yards': 'https://www.squareyards.com/careers',
+
+            # Logistics & Supply Chain
+            'Rivigo': 'https://www.rivigo.com/careers',
+            'BlackBuck': 'https://www.blackbuck.com/careers',
+            'Porter': 'https://porter.in/careers',
+            'Shadowfax': 'https://www.shadowfax.in/careers',
+            'Ecom Express': 'https://ecomexpress.in/careers/',
+            'Xpressbees': 'https://www.xpressbees.com/careers',
         }
 
     def extract_salary(self, salary_text):
@@ -372,12 +502,29 @@ class SimpleJobSearcher:
         """Search company career pages from placement tracker companies"""
         # Priority companies to search (high CTC companies from placement tracker)
         priority_companies = [
-            'Google', 'Microsoft', 'Amazon', 'Adobe', 'Apple', 'Goldman Sachs',
-            'JP Morgan', 'Morgan Stanley', 'Flipkart', 'Meesho', 'Zomato',
-            'PhonePe', 'Visa', 'PayPal', 'Intuit', 'Cisco', 'Oracle',
-            'Walmart', 'American Express', 'BlackRock', 'Wells Fargo',
-            'Dell', 'Nutanix', 'Commvault', 'Couchbase', 'Workday', 'OKTA',
-            'Marvell', 'Samsung', 'Honeywell', 'Optum'
+            # Top Tech
+            'Google', 'Microsoft', 'Amazon', 'Adobe', 'Apple', 'Flipkart', 'Meesho',
+            'Zomato', 'PhonePe', 'Intuit', 'Cisco', 'Oracle', 'Dell', 'Samsung',
+            # Finance
+            'Goldman Sachs', 'JP Morgan', 'Morgan Stanley', 'Visa', 'PayPal',
+            'American Express', 'BlackRock', 'Wells Fargo',
+            # SaaS & Tools
+            'Nutanix', 'Commvault', 'Couchbase', 'Workday', 'OKTA', 'Marvell',
+            'Freshworks', 'Zoho', 'BrowserStack', 'Postman', 'Chargebee', 'Sprinklr',
+            # Fintech
+            'Razorpay', 'CRED', 'Groww', 'Paytm', 'Slice', 'Jupiter', 'Juspay',
+            # E-commerce & Delivery
+            'Myntra', 'Nykaa', 'BigBasket', 'Blinkit', 'Zepto', 'Lenskart', 'Delhivery',
+            # Edtech
+            'Unacademy', 'UpGrad', 'Physics Wallah',
+            # Gaming & Entertainment
+            'Dream11', 'ShareChat', 'Hotstar',
+            # Travel
+            'MakeMyTrip', 'OYO', 'ixigo',
+            # Healthcare
+            'Practo', 'PharmEasy', 'Cult.fit', 'Innovaccer',
+            # Others
+            'Honeywell', 'Optum', 'NoBroker', 'Porter'
         ]
 
         search_keywords = [
