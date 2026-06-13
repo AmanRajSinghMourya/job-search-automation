@@ -1,4 +1,4 @@
-name: AI/ML Job Search for Sid
+name: Job Search for Punish
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:  # Manual trigger
 
 jobs:
-  search-jobs-sid:
+  search-jobs-punish:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests beautifulsoup4
 
-    - name: Search AI/ML jobs for Sid and send to Google Sheet
+    - name: Search jobs for Punish and send to Google Sheet
       env:
         WEB_APP_URL: ${{ secrets.WEB_APP_URL }}
-      run: python job_search_for_sid.py
+      run: python job_search_for_punish.py

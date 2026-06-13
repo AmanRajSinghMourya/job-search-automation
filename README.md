@@ -1,119 +1,56 @@
-# Automated Job Search System
+# Job Search Automation for Punish
 
-This GitHub Actions workflow automatically searches for AI/ML internships and jobs every 6 hours and updates an Excel file.
+This repository runs a scheduled GitHub Actions job search for Punish and sends new jobs to a Google Apps Script Web App. The Web App writes jobs into the Google Sheet and emails Punish immediately when new jobs are added.
 
-## Features
-- **Automated searches** every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
-- Searches multiple platforms: LinkedIn, Naukri, Instahire, Wellfound
-- Filters for:
-  - AI/ML internships and fresher roles
-  - Minimum stipend: ₹35,000+/month
-  - Minimum CTC: ₹12 LPA+
-  - 2026 graduates
-- Removes duplicates automatically
-- Updates Excel file with new jobs only
+## Current Files
 
-## Setup Instructions
+- `.github/workflows/job-search.yml` - daily GitHub Actions workflow
+- `job_search_for_punish.py` - Punish-only job search script
+- `google_apps_script_punish.js` - Apps Script code to paste into Google Apps Script
+- `requirements.txt` - Python dependency list
 
-### 1. Create a New GitHub Repository
-1. Go to GitHub and create a new repository (e.g., `job-search-automation`)
-2. Make it **private** to protect your job search data
+## GitHub Secret
 
-### 2. Upload Files to Repository
-Upload these files to your repository:
-- `.github/workflows/job-search.yml` (the workflow file)
-- `job_search.py` (the Python script)
-- `jobs.xlsx` (create an empty Excel file with these columns: Title, Company, Location, Link, Source, Date_Found, Status, Salary)
+The workflow expects one repository secret:
 
-### 3. Create Empty Excel File
-Create a file named `jobs.xlsx` with these column headers:
-- Title
-- Company
-- Location
-- Link
-- Source
-- Date_Found
-- Status
-- Salary
-
-### 4. Enable GitHub Actions
-1. Go to your repository Settings
-2. Click on "Actions" → "General"
-3. Under "Workflow permissions", select "Read and write permissions"
-4. Click "Save"
-
-### 5. Connect Your Email Automation
-Since you already have the Excel → Email part set up:
-1. Make sure your email automation can access the `jobs.xlsx` file from this GitHub repo
-2. You can either:
-   - Clone the repo locally and point your automation to it
-   - Use GitHub API to download the file periodically
-   - Set up a webhook to trigger when the file changes
-
-### 6. Manual Trigger (Optional)
-You can manually trigger the workflow:
-1. Go to "Actions" tab in your repository
-2. Click on "Daily Job Search"
-3. Click "Run workflow"
-
-## How It Works
-
-1. **GitHub Actions runs the workflow** every 6 hours
-2. **Python script searches** multiple job portals
-3. **Filters results** based on your criteria
-4. **Updates Excel file** with only new jobs (removes duplicates)
-5. **Commits changes** back to the repository
-6. **Your email automation** picks up the updated Excel file and sends you the links
-
-## Customization
-
-### Change Search Frequency
-Edit `.github/workflows/job-search.yml`:
-```yaml
-schedule:
-  - cron: '0 */6 * * *'  # Every 6 hours
-  # - cron: '0 0 * * *'   # Daily at midnight
-  # - cron: '0 0,12 * * *' # Twice daily
+```text
+WEB_APP_URL
 ```
 
-### Adjust Search Keywords
-Edit `job_search.py` and modify the keywords arrays:
-```python
-keywords = ['AI ML intern', 'Machine Learning intern', 'AI Engineer fresher']
+Set it to the deployed Google Apps Script Web App URL.
+
+## Schedule
+
+The workflow runs daily at `10:00 UTC` and can also be run manually from the GitHub Actions tab.
+
+## Apps Script Setup
+
+1. Open the target Google Sheet.
+2. Go to `Extensions > Apps Script`.
+3. Replace the script code with `google_apps_script_punish.js`.
+4. Save the project.
+5. Deploy as a Web App:
+   - Execute as: `Me`
+   - Who has access: `Anyone`
+6. Copy the Web App URL into the GitHub repository secret `WEB_APP_URL`.
+
+## Punish Configuration
+
+The current Sheet ID is:
+
+```text
+1nridtqY_EkI47W8dcKOBhuMLCazepmH9JNPuDXyuYLA
 ```
 
-### Add More Job Portals
-You can add more search functions to `job_search.py` for other job boards.
+The current email recipient is configured in `google_apps_script_punish.js`:
 
-## Important Notes
+```javascript
+const RECIPIENTS = ["punishmidha21@gmail.com"];
+```
 
-1. **Rate Limiting**: The script includes delays between requests to avoid being blocked
-2. **Web Scraping**: Some sites may change their HTML structure - you might need to update the script
-3. **API Access**: Consider using official APIs (LinkedIn, Naukri) for more reliable results
-4. **GitHub Actions Limits**: Free tier has 2000 minutes/month (this uses ~5 mins/day)
+## Local Test
 
-## Troubleshooting
-
-If jobs aren't being found:
-1. Check the "Actions" tab for error messages
-2. Test the script locally: `python job_search.py`
-3. Some job sites may block automated requests - consider rotating user agents
-4. LinkedIn might require authentication - consider using their API with a developer account
-
-## Privacy & Security
-
-- Keep your repository **private** to protect your job search
-- Don't commit sensitive information (API keys, passwords)
-- Use GitHub Secrets for any API keys needed
-
-## Next Steps
-
-Once this is running:
-1. Monitor for a few days to see the quality of results
-2. Adjust search keywords as needed
-3. Add more job portals if required
-4. Consider adding filters for specific companies or locations
-
----
-
-**Need help?** Check the GitHub Actions logs for detailed error messages.
+```bash
+python3 -m pip install -r requirements.txt
+WEB_APP_URL="YOUR_WEB_APP_URL" python3 job_search_for_punish.py
+```

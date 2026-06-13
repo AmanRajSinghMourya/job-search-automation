@@ -662,7 +662,7 @@ class SimpleJobSearcher:
 
         return set(), set()
 
-    def send_to_webapp(self, formatted_jobs, add_separator=True):
+    def send_to_webapp(self, formatted_jobs, add_separator=False):
         """Send jobs to Google Apps Script Web App with optional separator"""
         if not self.WEB_APP_URL:
             print("⚠️  WEB_APP_URL not set. Jobs will be saved to JSON only.")
