@@ -14,7 +14,6 @@ class SimpleJobSearcher:
         }
 
         # Your profile criteria
-        self.min_stipend = 20000  # Rs per month
         self.min_ctc = 500000  # Rs per annum
 
         # Google Sheet configuration
@@ -325,16 +324,21 @@ class SimpleJobSearcher:
 
     def matches_criteria(self, job_data):
         """Check if job matches minimum criteria"""
+        if self.is_internship(job_data):
+            return False
+
         if 'Salary' in job_data and job_data['Salary'] != 'Not disclosed':
             salary = self.extract_salary(job_data['Salary'])
             if salary:
-                if 'intern' in job_data['Title'].lower():
-                    if salary < (self.min_stipend * 12):
-                        return False
-                else:
-                    if salary < self.min_ctc:
-                        return False
+                if salary < self.min_ctc:
+                    return False
         return True
+
+    def is_internship(self, job_data):
+        """Reject internship roles even if a job board returns them for full-time searches."""
+        title = job_data.get('Title', '').lower()
+        job_type = job_data.get('Type', '').lower()
+        return 'intern' in title or 'internship' in job_type
 
     def format_salary_for_sheet(self, salary_text, job_type):
         """Format salary for Google Sheets display"""
@@ -345,32 +349,28 @@ class SimpleJobSearcher:
         if not salary:
             return salary_text
 
-        if 'intern' in job_type.lower():
-            monthly = salary / 12
-            return f'₹{int(monthly):,}/month'
-        else:
-            lpa = salary / 100000
-            return f'₹{lpa:.1f} LPA'
+        lpa = salary / 100000
+        return f'₹{lpa:.1f} LPA'
 
     def search_linkedin_api_style(self):
         """More targeted LinkedIn search"""
         search_queries = [
-            "Data Analyst Intern 2026",
-            "Power BI Intern",
-            "SQL Data Analyst Intern",
-            "Business Intelligence Analyst Intern",
+            "Data Analyst Full Time",
+            "Power BI Analyst Full Time",
+            "SQL Data Analyst Full Time",
+            "Business Intelligence Analyst Full Time",
             "Advanced Excel Data Analyst",
             "Power Query DAX Analyst",
-            "Data Visualization Intern",
-            "Dashboard Developer Intern",
+            "Data Visualization Analyst",
+            "Dashboard Developer Full Time",
             "KPI Reporting Analyst",
-            "Reporting Analytics Intern"
+            "Reporting Analytics Analyst"
         ]
 
         for query in search_queries:
             try:
                 encoded_query = query.replace(' ', '%20')
-                url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={encoded_query}&location=India&f_E=2%2C1&f_TPR=r86400&start=0"
+                url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={encoded_query}&location=India&f_E=2&f_TPR=r86400&start=0"
 
                 response = requests.get(url, headers=self.headers, timeout=10)
 
@@ -385,18 +385,21 @@ class SimpleJobSearcher:
                             link_elem = listing.find('a', class_='base-card__full-link')
 
                             if title_elem and company_elem and link_elem:
-                                job_type = 'Internship' if 'intern' in title_elem.text.lower() else 'Full-time'
+                                title_text = title_elem.text.strip()
+                                if 'intern' in title_text.lower():
+                                    continue
 
                                 job_data = {
                                     'Company': company_elem.text.strip(),
-                                    'Title': title_elem.text.strip(),
-                                    'Type': job_type,
+                                    'Title': title_text,
+                                    'Type': 'Full-time',
                                     'Salary': 'Not disclosed',
                                     'Link': link_elem.get('href', ''),
                                     'Source': 'LinkedIn'
                                 }
 
-                                self.jobs.append(job_data)
+                                if self.matches_criteria(job_data):
+                                    self.jobs.append(job_data)
                         except Exception as e:
                             continue
 
@@ -405,54 +408,16 @@ class SimpleJobSearcher:
             except Exception as e:
                 print(f"LinkedIn search error for '{query}': {e}")
 
-    def search_internshala(self):
-        """Search Internshala for high-paying internships"""
-        try:
-            base_url = "https://internshala.com/internships/data%20analytics,business%20analytics,data%20science-internship/"
-            response = requests.get(base_url, headers=self.headers, timeout=10)
-
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.content, 'html.parser')
-                internships = soup.find_all('div', class_='individual_internship')
-
-                for internship in internships[:10]:
-                    try:
-                        title = internship.find('h3', class_='job-title')
-                        company = internship.find('p', class_='company-name')
-                        stipend = internship.find('span', class_='stipend')
-                        link = internship.find('a', class_='view_detail_button')
-
-                        if title and company:
-                            stipend_text = stipend.text.strip() if stipend else 'Not disclosed'
-
-                            job_data = {
-                                'Company': company.text.strip(),
-                                'Title': title.text.strip(),
-                                'Type': 'Internship',
-                                'Salary': stipend_text,
-                                'Link': f"https://internshala.com{link['href']}" if link else '',
-                                'Source': 'Internshala'
-                            }
-
-                            if self.matches_criteria(job_data):
-                                self.jobs.append(job_data)
-
-                    except Exception as e:
-                        continue
-
-        except Exception as e:
-            print(f"Internshala search error: {e}")
-
     def search_naukri_targeted(self):
         """Enhanced Naukri search"""
         search_terms = [
-            'data-analyst-intern',
-            'power-bi-analyst',
-            'sql-data-analyst-fresher',
+            'data-analyst',
+            'power-bi-analyst-full-time',
+            'sql-data-analyst',
             'business-intelligence-analyst',
-            'reporting-analyst-intern',
+            'reporting-analyst',
             'dashboard-developer',
-            'mis-analyst-fresher'
+            'mis-analyst'
         ]
 
         for term in search_terms:
@@ -472,6 +437,10 @@ class SimpleJobSearcher:
                             experience = article.find('span', class_='expwdth')
 
                             if title and company:
+                                title_text = title.text.strip()
+                                if 'intern' in title_text.lower():
+                                    continue
+
                                 exp_text = experience.text.strip() if experience else ''
                                 if 'years' in exp_text.lower():
                                     exp_num = re.findall(r'\d+', exp_text)
@@ -479,12 +448,11 @@ class SimpleJobSearcher:
                                         continue
 
                                 salary_text = salary.text.strip() if salary else 'Not disclosed'
-                                job_type = 'Internship' if 'intern' in title.text.lower() else 'Full-time'
 
                                 job_data = {
                                     'Company': company.text.strip(),
-                                    'Title': title.text.strip(),
-                                    'Type': job_type,
+                                    'Title': title_text,
+                                    'Type': 'Full-time',
                                     'Salary': salary_text,
                                     'Link': f"https://www.naukri.com{title['href']}" if title else '',
                                     'Source': 'Naukri'
@@ -531,7 +499,7 @@ class SimpleJobSearcher:
         ]
 
         search_keywords = [
-            'intern', 'fresher', 'graduate', 'entry level', 'associate',
+            'fresher', 'graduate', 'entry level', 'associate',
             'data analyst', 'business analyst', 'business intelligence',
             'power bi', 'sql', 'advanced excel', 'power query', 'dax',
             'data visualization', 'dashboard', 'kpi', 'reporting',
@@ -573,9 +541,12 @@ class SimpleJobSearcher:
                                 if title_elem:
                                     title_text = title_elem.get_text().strip()
 
-                                    # Check if it's a relevant role (intern/fresher/entry-level)
+                                    # Check if it's a relevant non-intern analytics role.
                                     title_lower = title_text.lower()
-                                    is_entry_level = any(kw in title_lower for kw in ['intern', 'fresher', 'graduate', 'entry', 'associate', 'junior', 'trainee'])
+                                    if 'intern' in title_lower:
+                                        continue
+
+                                    is_entry_level = any(kw in title_lower for kw in ['fresher', 'graduate', 'entry', 'associate', 'junior', 'trainee'])
                                     is_analytics_role = any(kw in title_lower for kw in [
                                         'data analyst', 'business analyst', 'bi analyst',
                                         'business intelligence', 'power bi', 'sql',
@@ -599,12 +570,10 @@ class SimpleJobSearcher:
                                             else:
                                                 job_link = career_url
 
-                                        job_type = 'Internship' if 'intern' in title_lower else 'Full-time'
-
                                         job_data = {
                                             'Company': company,
                                             'Title': title_text,
-                                            'Type': job_type,
+                                            'Type': 'Full-time',
                                             'Salary': 'Not disclosed',
                                             'Link': job_link if job_link else career_url,
                                             'Source': 'Company Career Page'
@@ -616,7 +585,7 @@ class SimpleJobSearcher:
                                             for j in self.jobs
                                         )
 
-                                        if not is_duplicate:
+                                        if not is_duplicate and self.matches_criteria(job_data):
                                             self.jobs.append(job_data)
                                             jobs_found += 1
 
@@ -808,10 +777,10 @@ def main():
     print("🔍 AUTOMATED JOB SEARCH FOR PUNISH")
     print("=" * 70)
     print(f"⏰ Search time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S IST')}")
-    print(f"🎯 Target: Data Analyst, Power BI, SQL, Excel, DAX, BI and reporting roles")
-    print(f"💰 Min Stipend: ₹20,000/month | Min CTC: ₹5 LPA")
+    print(f"🎯 Target: Full-time Data Analyst, Power BI, SQL, Excel, DAX, BI and reporting roles")
+    print(f"💰 Min CTC: ₹5 LPA")
     print(f"📧 Recipient: Punish")
-    print(f"🏢 Sources: LinkedIn, Naukri, Internshala + Company Career Pages")
+    print(f"🏢 Sources: LinkedIn, Naukri + Company Career Pages")
     print("=" * 70)
 
     searcher = SimpleJobSearcher()
@@ -824,11 +793,6 @@ def main():
     print("\n🔎 Searching Naukri...")
     initial_count = len(searcher.jobs)
     searcher.search_naukri_targeted()
-    print(f"   Found {len(searcher.jobs) - initial_count} new listings")
-
-    print("\n🔎 Searching Internshala...")
-    initial_count = len(searcher.jobs)
-    searcher.search_internshala()
     print(f"   Found {len(searcher.jobs) - initial_count} new listings")
 
     print("\n🔎 Searching Company Career Pages (Placement Tracker Companies)...")
