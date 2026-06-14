@@ -355,15 +355,16 @@ class SimpleJobSearcher:
     def search_linkedin_api_style(self):
         """More targeted LinkedIn search"""
         search_queries = [
-            "Software Developer Intern 2026",
-            "SDE Intern 2026",
-            "Python Developer Intern",
-            "Java Developer Intern",
-            "Full Stack Developer Intern",
-            "Web Developer Intern",
-            "Software Engineer Intern",
-            "Backend Developer Intern",
-            "Frontend Developer Intern"
+            "Data Analyst Intern 2026",
+            "Power BI Intern",
+            "SQL Data Analyst Intern",
+            "Business Intelligence Analyst Intern",
+            "Advanced Excel Data Analyst",
+            "Power Query DAX Analyst",
+            "Data Visualization Intern",
+            "Dashboard Developer Intern",
+            "KPI Reporting Analyst",
+            "Reporting Analytics Intern"
         ]
 
         for query in search_queries:
@@ -407,7 +408,7 @@ class SimpleJobSearcher:
     def search_internshala(self):
         """Search Internshala for high-paying internships"""
         try:
-            base_url = "https://internshala.com/internships/web%20development,software%20development,python-internship/"
+            base_url = "https://internshala.com/internships/data%20analytics,business%20analytics,data%20science-internship/"
             response = requests.get(base_url, headers=self.headers, timeout=10)
 
             if response.status_code == 200:
@@ -445,11 +446,13 @@ class SimpleJobSearcher:
     def search_naukri_targeted(self):
         """Enhanced Naukri search"""
         search_terms = [
-            'software-developer-intern',
-            'python-developer-fresher',
-            'java-developer-intern',
-            'web-developer-intern',
-            'software-engineer-intern-2026'
+            'data-analyst-intern',
+            'power-bi-analyst',
+            'sql-data-analyst-fresher',
+            'business-intelligence-analyst',
+            'reporting-analyst-intern',
+            'dashboard-developer',
+            'mis-analyst-fresher'
         ]
 
         for term in search_terms:
@@ -529,7 +532,10 @@ class SimpleJobSearcher:
 
         search_keywords = [
             'intern', 'fresher', 'graduate', 'entry level', 'associate',
-            'software engineer', 'developer', 'sde', '2025', '2026'
+            'data analyst', 'business analyst', 'business intelligence',
+            'power bi', 'sql', 'advanced excel', 'power query', 'dax',
+            'data visualization', 'dashboard', 'kpi', 'reporting',
+            'analytics', 'data modeling', 'mis analyst', '2025', '2026'
         ]
 
         jobs_found = 0
@@ -569,9 +575,15 @@ class SimpleJobSearcher:
 
                                     # Check if it's a relevant role (intern/fresher/entry-level)
                                     title_lower = title_text.lower()
-                                    is_relevant = any(kw in title_lower for kw in ['intern', 'fresher', 'graduate', 'entry', 'associate', 'junior', 'trainee'])
+                                    is_entry_level = any(kw in title_lower for kw in ['intern', 'fresher', 'graduate', 'entry', 'associate', 'junior', 'trainee'])
+                                    is_analytics_role = any(kw in title_lower for kw in [
+                                        'data analyst', 'business analyst', 'bi analyst',
+                                        'business intelligence', 'power bi', 'sql',
+                                        'reporting analyst', 'dashboard', 'analytics',
+                                        'mis analyst', 'data visualization'
+                                    ])
 
-                                    if is_relevant and len(title_text) > 5 and len(title_text) < 150:
+                                    if (is_entry_level or is_analytics_role) and len(title_text) > 5 and len(title_text) < 150:
                                         # Try to get job link
                                         link_elem = elem.find('a', href=True)
                                         job_link = ''
@@ -796,7 +808,7 @@ def main():
     print("🔍 AUTOMATED JOB SEARCH FOR PUNISH")
     print("=" * 70)
     print(f"⏰ Search time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S IST')}")
-    print(f"🎯 Target: Software Development Internships/Jobs for 2026 Batch")
+    print(f"🎯 Target: Data Analyst, Power BI, SQL, Excel, DAX, BI and reporting roles")
     print(f"💰 Min Stipend: ₹20,000/month | Min CTC: ₹5 LPA")
     print(f"📧 Recipient: Punish")
     print(f"🏢 Sources: LinkedIn, Naukri, Internshala + Company Career Pages")

@@ -1,6 +1,6 @@
 # Job Search Automation for Punish
 
-This repository runs a scheduled GitHub Actions job search for Punish and sends new jobs to a Google Apps Script Web App. The Web App writes jobs into the Google Sheet and emails Punish immediately when new jobs are added.
+This repository runs a scheduled GitHub Actions job search for Punish and sends new jobs to a Google Apps Script Web App. The current search profile targets Data Analyst, Power BI, SQL, Advanced Excel, Power Query, DAX, Data Visualization, Dashboard Development, KPI Reporting, Business Intelligence, Data Modeling, and Reporting & Analytics roles. The Web App writes jobs into the Google Sheet and emails Punish immediately when new jobs are added.
 
 ## Current Files
 

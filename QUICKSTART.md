@@ -6,4 +6,4 @@
 4. Open the GitHub Actions tab.
 5. Run `Job Search for Punish` manually once to test.
 
-The repo is Punish-only. The workflow runs `job_search_for_punish.py` and the Apps Script emails only `punishmidha21@gmail.com`.
+The repo is Punish-only. The workflow runs `job_search_for_punish.py`, searches Data Analyst / BI roles, and the Apps Script emails only `punishmidha21@gmail.com`.
